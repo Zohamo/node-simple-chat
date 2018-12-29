@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Super Chat</title>
+        <style>
+            .myPseudo { background-color: #ff41a0; }
+            .pseudo { background-color: #e2ff41; }
+        </style>
+    </head>
+ 
+    <body>
+        <h1>Super Tchat</h1>
+        
+        <section id="chatbox"></section>
+        
+        <form id="formMessage" action="#" method="post">
+            <input id="messageInput" name="messageInput" />
+        </form>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8080');
+            
+            // Pseudo
+            var pseudo = prompt("Veuillez entrer votre pseudo :");
+            socket.emit("newLog", pseudo);
+            
+            // Input
+            document.getElementById("formMessage").addEventListener("submit", function(e) {
+                e.preventDefault();
+                socket.emit("messageInput", document.getElementById("messageInput").value);
+                document.getElementById("messageInput").value = "";
+            });
+            
+            // Affichage du message
+            socket.on("message", function(message) {
+                var messageEl = document.createElement("p");
+                messageEl.innerHTML = message;
+                document.getElementById("chatbox").append(messageEl);
+            });
+        </script>
+    </body>
+</html>
